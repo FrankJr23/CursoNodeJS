@@ -99,45 +99,93 @@ async function playRaceEngine(character1, character2) {
     }
 
     if (block === "CONFRONTO") {
-      let powerResult1 = diceResult1 + character1.PODER;
-      let powerResult2 = diceResult2 + character2.PODER;
+  let powerResult1 = diceResult1 + character1.PODER;
+  let powerResult2 = diceResult2 + character2.PODER;
 
-      console.log(`${character1.NOME} confrontou com ${character2.NOME}! 🥊`);
+  console.log(`${character1.NOME} confrontou com ${character2.NOME}! 🥊`);
 
-      await logRollResult(
-        character1.NOME,
-        "poder",
-        diceResult1,
-        character1.PODER
-      );
+  await logRollResult(character1.NOME, "poder", diceResult1, character1.PODER);
+  await logRollResult(character2.NOME, "poder", diceResult2, character2.PODER);
 
-      await logRollResult(
-        character2.NOME,
-        "poder",
-        diceResult2,
-        character2.PODER
-      );
+  // Sorteia a penalidade: CASCO (-1) ou BOMBA (-2)
+  const penaltyType = Math.random() < 0.5 ? "CASCO" : "BOMBA";
+  const penaltyPoints = penaltyType === "CASCO" ? 1 : 2;
 
-      if (powerResult1 > powerResult2 && character2.PONTOS > 0) {
-        console.log(
-          `${character1.NOME} venceu o confronto! ${character2.NOME} perdeu 1 ponto 🐢`
-        );
-        character2.PONTOS--;
-      }
+  // Sorteia se o vencedor ganha turbo (+1 ponto)
+  const turboAwarded = Math.random() < 0.5;
 
-      if (powerResult2 > powerResult1 && character1.PONTOS > 0) {
-        console.log(
-          `${character2.NOME} venceu o confronto! ${character1.NOME} perdeu 1 ponto 🐢`
-        );
-        character1.PONTOS--;
-      }
-
+  if (powerResult1 > powerResult2) {
+    if (character2.PONTOS > 0) {
+      let pontosPerdidos = Math.min(penaltyPoints, character2.PONTOS);
+      character2.PONTOS -= pontosPerdidos;
       console.log(
-        powerResult2 === powerResult1
-          ? "Confronto empatado! Nenhum ponto foi perdido"
-          : ""
+        `${character1.NOME} venceu o confronto! ${character2.NOME} perdeu ${pontosPerdidos} ponto(s) com ${penaltyType} 💥`
       );
     }
+    if (turboAwarded) {
+      character1.PONTOS++;
+      console.log(`${character1.NOME} ganhou um TURBO! +1 ponto extra 🚀`);
+    }
+  } else if (powerResult2 > powerResult1) {
+    if (character1.PONTOS > 0) {
+      let pontosPerdidos = Math.min(penaltyPoints, character1.PONTOS);
+      character1.PONTOS -= pontosPerdidos;
+      console.log(
+        `${character2.NOME} venceu o confronto! ${character1.NOME} perdeu ${pontosPerdidos} ponto(s) com ${penaltyType} 💥`
+      );
+    }
+    if (turboAwarded) {
+      character2.PONTOS++;
+      console.log(`${character2.NOME} ganhou um TURBO! +1 ponto extra 🚀`);
+    }
+  } else {
+    console.log("Confronto empatado! Nenhum ponto foi perdido");
+  }
+}
+if (block === "CONFRONTO") {
+  let powerResult1 = diceResult1 + character1.PODER;
+  let powerResult2 = diceResult2 + character2.PODER;
+
+  console.log(`${character1.NOME} confrontou com ${character2.NOME}! 🥊`);
+
+  await logRollResult(character1.NOME, "poder", diceResult1, character1.PODER);
+  await logRollResult(character2.NOME, "poder", diceResult2, character2.PODER);
+
+  // Sorteia a penalidade: CASCO (-1) ou BOMBA (-2)
+  const penaltyType = Math.random() < 0.5 ? "CASCO" : "BOMBA";
+  const penaltyPoints = penaltyType === "CASCO" ? 1 : 2;
+
+  // Sorteia se o vencedor ganha turbo (+1 ponto)
+  const turboAwarded = Math.random() < 0.5;
+
+  if (powerResult1 > powerResult2) {
+    if (character2.PONTOS > 0) {
+      let pontosPerdidos = Math.min(penaltyPoints, character2.PONTOS);
+      character2.PONTOS -= pontosPerdidos;
+      console.log(
+        `${character1.NOME} venceu o confronto! ${character2.NOME} perdeu ${pontosPerdidos} ponto(s) com ${penaltyType} 💥`
+      );
+    }
+    if (turboAwarded) {
+      character1.PONTOS++;
+      console.log(`${character1.NOME} ganhou um TURBO! +1 ponto extra 🚀`);
+    }
+  } else if (powerResult2 > powerResult1) {
+    if (character1.PONTOS > 0) {
+      let pontosPerdidos = Math.min(penaltyPoints, character1.PONTOS);
+      character1.PONTOS -= pontosPerdidos;
+      console.log(
+        `${character2.NOME} venceu o confronto! ${character1.NOME} perdeu ${pontosPerdidos} ponto(s) com ${penaltyType} 💥`
+      );
+    }
+    if (turboAwarded) {
+      character2.PONTOS++;
+      console.log(`${character2.NOME} ganhou um TURBO! +1 ponto extra 🚀`);
+    }
+  } else {
+    console.log("Confronto empatado! Nenhum ponto foi perdido");
+  }
+}
 
     // verificando o vencedor
     if (totalTestSkill1 > totalTestSkill2) {
